@@ -585,7 +585,7 @@ AFDGEBC
 
 再写一个中序遍历的函数
 
-交换左右子树，也是递归地交换
+`exchange`函数交换左右子树，也是递归地交换（因为没有改变指针的值，所以不用二级指针）
 
 
 **题解代码（C语言）**
@@ -637,6 +637,122 @@ int main(){
 
 ---
 
+
+### 2.3 玩转二叉树 {#tree-3}
+
+<div class="problem-tag">练习题 · 树 · 二叉树</div>
+
+**题目描述**
+
+给定一棵二叉树的中序遍历和前序遍历，请你先将树做个镜面反转，再输出反转后的层序遍历的序列。
+
+所谓镜面反转，是指将所有非叶结点的左右孩子对换。这里假设键值都是互不相等的正整数。
+
+**输入格式**
+
+输入第一行给出一个正整数 `N`（≤30），是二叉树中结点的个数。
+
+第二行给出其中序遍历序列。
+
+第三行给出其前序遍历序列。
+
+数字间以空格分隔。
+
+**输出格式**
+
+在一行中输出该树反转后的层序遍历的序列。数字间以 1 个空格分隔，行首尾不得有多余空格。
+
+**输入样例**
+
+```text
+7
+1 2 3 4 5 6 7
+4 1 3 2 6 5 7
+```
+
+**输出样例**
+
+```text
+4 6 1 7 5 3 2
+```
+
+**思路分析**
+
+给了前序、中序，找点、分段，递归的构建节点，建树
+
+`exchange`函数同上题，层序遍历用队列
+
+**题解代码（C语言）**
+
+```c:line-numbers
+#include <stdio.h>
+#include <stdlib.h>
+int n;
+int in[40],pre[40];
+struct node {
+	int data;
+	struct node *l,*r;
+};
+struct node *buildtree(int il,int ir,int pl,int pr){
+	if (pl>pr){
+		return NULL;
+	}
+	struct node *root=(struct node *)malloc(sizeof(struct node));
+	root->data=pre[pl];
+	int i,index;
+	for (i=il;i<=ir;i++){
+		if (pre[pl]==in[i]){
+			index=i;
+			break;
+		}
+	}
+	root->l=buildtree(il,index-1,pl+1,pl+index-il);
+	root->r=buildtree(index+1,ir,pl+index-il+1,pr);
+	return root;
+}
+void exchange(struct node *t){
+	if (t){
+		struct node *tmp=t->l;
+		t->l=t->r;
+		t->r=tmp;
+		exchange(t->l);
+		exchange(t->r);
+	}
+}
+int main(){
+	scanf("%d",&n);
+	int i;
+	for (i=1;i<=n;i++){
+		scanf("%d",&in[i]);
+	}
+	for (i=1;i<=n;i++){
+		scanf("%d",&pre[i]);
+	}
+	struct node *root=buildtree(1,n,1,n);
+	exchange(root);
+	struct node *q[1000];
+	int rear=-1,front=0;
+	q[++rear]=root;
+	int cnt=0;
+	while (rear>=front){
+		struct node *u=q[front++];
+		if (cnt==0){
+			printf("%d",u->data);
+			cnt++;
+		}else {
+			printf(" %d",u->data);
+		}
+		if (u->l!=NULL){
+			q[++rear]=u->l;
+		}
+		if (u->r!=NULL){
+			q[++rear]=u->r;
+		}
+	}
+}
+```
+
+---
 
 
 ## 03 · 图 {#graph}

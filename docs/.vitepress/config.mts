@@ -25,6 +25,8 @@ export default defineConfig({
         { text: '2.1 树的遍历', link: '/#tree-1' },
         { text: '2.2 交换二叉树中每个结点的左孩子和右孩子', link: '/#tree-2' },
         { text: '2.3 玩转二叉树', link: '/#tree-3' },
+        { text: '2.4 Binary Search Tree', link: '/#tree-4' },
+        { text: '2.5 Traverse Binary Search Tree', link: '/#tree-5' },
       ] },
       { text: '03 · 图', link: '/#graph', collapsed: false, items: [
         { text: '3.1 无向图的度', link: '/#graph-1' },

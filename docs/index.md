@@ -19,7 +19,7 @@ outline: true
 
 <div class="info-panel" id="updates">
   <strong>📅 最新更新时间</strong>
-  <p>2026 年 10 月 27 日  （目前更新到2.2题，后面均为示例题目）</p>
+  <p>2026 年 10 月 28 日  （目前更新到2.5题，后面均为示例题目）</p>
 </div>
 
 <div class="info-panel" id="about">
@@ -60,13 +60,13 @@ If more than one symbol are not balanced, output corresponding numbers, sort the
 
 **输入样例**
 
-```text
+```text:line-numbers
 {a*(b-c)-x/2]
 ```
 
 **输出样例**
 
-```text
+```text:line-numbers
 2,3,
 ```
 **思路分析**
@@ -161,13 +161,13 @@ The second line gives the postfix expression. Use a blank space to divide every 
 
 **输入样例**
 
-```text
+```text:line-numbers
 2*(3+4)/5
 ```
 
 **输出样例**
 
-```text
+```text:line-numbers
 2.80
 2 3 4 + * 5 / 
 ```
@@ -309,13 +309,13 @@ If it is a central list, output `Yes`, otherwise `No`.
 
 **输入样例**
 
-```text
+```text:line-numbers
 1,3,5,7,9,7,5,3,1,
 ```
 
 **输出样例**
 
-```text
+```text:line-numbers
 Yes
 ```
 
@@ -373,13 +373,13 @@ N integers, separated by commas. These numbers indicate the order of the person 
 
 **输入样例**
 
-```text
+```text:line-numbers
 5,1
 ```
 
 **输出样例**
 
-```text
+```text:line-numbers
 2,4,1,5,3
 ```
 
@@ -469,7 +469,7 @@ int main(){
 
 **输入样例**
 
-```text
+```text:line-numbers
 7
 2 3 1 5 7 6 4
 1 2 3 4 5 6 7
@@ -477,7 +477,7 @@ int main(){
 
 **输出样例**
 
-```text
+```text:line-numbers
 4 1 6 3 5 7 2
 ```
 
@@ -568,13 +568,13 @@ int main(){
 
 **输入样例**
 
-```text
+```text:line-numbers
 ABC##DE#G##F###
 ```
 
 **输出样例**
 
-```text
+```text:line-numbers
 CBEGDFA
 AFDGEBC
 ```
@@ -664,7 +664,7 @@ int main(){
 
 **输入样例**
 
-```text
+```text:line-numbers
 7
 1 2 3 4 5 6 7
 4 1 3 2 6 5 7
@@ -672,7 +672,7 @@ int main(){
 
 **输出样例**
 
-```text
+```text:line-numbers
 4 6 1 7 5 3 2
 ```
 
@@ -749,6 +749,222 @@ int main(){
 			q[++rear]=u->r;
 		}
 	}
+}
+```
+
+---
+
+### 2.4 Binary Search Tree {#tree-4}
+
+<div class="problem-tag">练习题 · 树 · 二叉搜索树</div>
+
+**题目描述**
+
+【Definition】A binary search tree is a binary tree. It may be empty. If it is not empty, it satisfies the following properties:
+
+(1) Every node has a key which is an integer, and the keys are distinct.
+
+(2) The keys in a nonempty left subtree must be smaller than the key in the root of the subtree.
+
+(3) The keys in a nonempty right subtree must be larger than the key in the root of the subtree.
+
+(4) The left and right subtrees are also binary search trees.
+
+Give a sequence of distinct integers to build the binary search tree, and output the nodes on a particular level.
+
+**输入格式**
+
+3 lines.
+
+The first line means the number of sequence. This number is more than 1 and less than 20.
+
+The second line gives the sequence of distinct integers. The integers are divided by comma. You must build the tree according to the input order.
+
+The third line means the number of level (`>=1`). The root node is located on level 1. And the children of the root are located on level 2. And so on.
+
+**输出格式**
+
+1 line.
+
+A sequence of numbers divided by comma. The numbers represent the nodes on the given level from left to right.
+
+If there is no node on the level, then output `-1`.
+
+**输入样例**
+
+```text:line-numbers
+10
+32,3,56,4,75,53,33,76,90,2,
+3
+```
+
+**输出样例**
+
+```text:line-numbers
+2,4,53,75,
+```
+
+**思路分析**
+
+`insert`函数，二叉搜索树递归地插入方式
+
+输出特定一层，还是层序遍历，本质`bfs`，用队列实现
+
+队列传参时，加一个参数记录层数
+
+**题解代码（C语言）**
+
+```c:line-numbers
+#include <stdio.h>
+#include <stdlib.h>
+struct node {
+	int data;
+	struct node *l,*r;
+};
+struct node *insert(struct node *t,int x){
+	if (t==NULL){
+		struct node *newnode=(struct node*)malloc(sizeof(struct node));
+		newnode->data=x;
+		newnode->l=newnode->r=NULL;
+		return newnode;
+	}
+	if (t->data>x){
+		t->l=insert(t->l,x);
+	}
+	if (t->data<x){
+		t->r=insert(t->r,x);
+	}
+	return t;
+}
+struct qnode {
+	struct node *ptr;
+	int level;
+};
+int main(){
+	int n;
+	scanf("%d",&n);
+	struct node *root=NULL;
+	while (n--){
+		int x;
+		scanf("%d",&x);
+		root=insert(root,x);
+		getchar();
+	}
+	int l;
+	scanf("%d",&l);
+	struct qnode q[1000];
+	int rear=-1,front=0;
+	q[++rear]=(struct qnode){root,1};
+	int cnt=0;
+	while (rear>=front){
+		struct qnode u=q[front++];
+		if (u.level==l){
+			printf("%d,",u.ptr->data);
+			cnt++;
+		}
+		if (u.ptr->l){
+			q[++rear]=(struct qnode){u.ptr->l,u.level+1};
+		}
+		if (u.ptr->r){
+			q[++rear]=(struct qnode){u.ptr->r,u.level+1};
+		}
+	}
+	if (cnt==0){
+		printf("-1");
+	}
+}
+```
+
+---
+
+
+### 2.5 Traverse Binary Search Tree {#tree-5}
+
+<div class="problem-tag">练习题 · 树 · 二叉搜索树</div>
+
+**题目描述**
+
+A binary search tree is a binary tree. It may be empty. If it is not empty, it satisfies the following properties:
+
+(1) Every node has a key which is an integer, and the keys are distinct.
+
+(2) The keys in a nonempty left subtree must be smaller than the key in the root of the subtree.
+
+(3) The keys in a nonempty right subtree must be larger than the key in the root of the subtree.
+
+(4) The left and right subtrees are also binary search trees.
+
+Given a sequence of distinct integers to build the binary search tree, and traverse the tree by Preorder.
+
+**输入格式**
+
+1 line.
+
+The line gives a sequence of distinct integers. These integers are separated by commas. The binary search tree must be built according to the input order of these integers.
+
+**输出格式**
+
+1 line.
+
+One sequence of integers separated by commas. The sequence is the traversal result of the Preorder.
+
+**输入样例**
+
+```text:line-numbers
+4,2,6,1,3,5,7,
+```
+
+**输出样例**
+
+```text:line-numbers
+4,2,1,3,6,5,7,
+```
+
+**思路分析**
+
+结合了二叉搜索树的 `insert` 函数和二叉树的前序遍历。
+
+有可能本地编译器不支持 EOF，直接 PTA 上提交就行。
+
+**题解代码（C语言）**
+
+```c:line-numbers
+#include <stdio.h>
+#include <stdlib.h>
+struct node {
+	int data;
+	struct node *l,*r;
+};
+struct node *insert(struct node *t,int x){
+	if (t==NULL){
+		struct node *newnode=(struct node*)malloc(sizeof(struct node));
+		newnode->data=x;
+		newnode->l=newnode->r=NULL;
+		return newnode;
+	}
+	if (t->data>x){
+		t->l=insert(t->l,x);
+	}
+	if (t->data<x){
+		t->r=insert(t->r,x);
+	}
+	return t;
+}
+void preorder(struct node *t){
+	if (t){
+		printf("%d,",t->data);
+		preorder(t->l);
+		preorder(t->r);
+	}
+}
+int main(){
+	struct node *root=NULL;
+	int x;
+	while ((scanf("%d",&x))!=EOF){
+		getchar();
+		root=insert(root,x);
+	}
+	preorder(root);
 }
 ```
 

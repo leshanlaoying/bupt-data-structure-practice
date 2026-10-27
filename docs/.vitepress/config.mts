@@ -8,7 +8,7 @@ export default defineConfig({
   cleanUrls: true,
   themeConfig: {
     siteTitle: 'BUPT · Data Structures',
-    nav: [{ text: '题库首页', link: '/' }, { text: 'PTA 练习平台', link: 'https://pintia.cn/' }],
+    nav: [{ text: '题库首页', link: '/' }, { text: 'github仓库', link: 'https://github.com/leshanlaoying/bupt-data-structure-practice' }],
     search: { provider: 'local', options: { translations: {
       button: { buttonText: '搜索题目', buttonAriaLabel: '搜索题目' },
       modal: { noResultsText: '没有找到相关题目', resetButtonTitle: '清空搜索', footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' } }

@@ -27,6 +27,7 @@ export default defineConfig({
         { text: '2.3 玩转二叉树', link: '/#tree-3' },
         { text: '2.4 Binary Search Tree', link: '/#tree-4' },
         { text: '2.5 Traverse Binary Search Tree', link: '/#tree-5' },
+        { text: '2.6 AVL Tree', link: '/#tree-6' },
       ] },
       { text: '03 · 图', link: '/#graph', collapsed: false, items: [
         { text: '3.1 无向图的度', link: '/#graph-1' },

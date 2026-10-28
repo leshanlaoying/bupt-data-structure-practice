@@ -971,6 +971,129 @@ int main(){
 ---
 
 
+### 2.6 AVL Tree {#tree-6}
+
+<div class="problem-tag">练习题 · 树 · 平衡二叉树</div>
+
+**题目描述**
+
+Inserting some numbers into an initially empty AVL tree. Show the AVL tree in preorder.
+
+**输入格式**
+
+1 line. Some distinct numbers separated by comma.
+
+**输出格式**
+
+1 line. The numbers separated by comma in preorder.
+
+**输入样例**
+
+```text
+3,1,4,6,9,2,5,7,
+```
+
+**输出样例**
+
+```text
+3,1,2,6,4,5,9,7,
+```
+
+**思路分析**
+
+要理解平衡二叉树的`树高`，`平衡因子`，`左单旋`，`右单旋`的概念，然后写代码实现
+
+`insert`函数在插入后，如果不平衡了，则进行调整
+
+**题解代码（C语言）**
+
+```c:line-numbers
+#include <stdio.h>
+#include <stdlib.h>
+struct avlnode {
+	int data;
+	int height;
+	struct avlnode *l,*r;
+};
+int geth(struct avlnode *t){
+	if (t==NULL){
+		return 0;
+	}else {
+		return t->height;
+	}
+}
+int getbf(struct avlnode *t){
+	return geth(t->l)-geth(t->r);
+}
+void updateh(struct avlnode *t){
+	int lh=geth(t->l);
+	int rh=geth(t->r);
+	t->height=lh>rh?lh+1:rh+1;
+}
+struct avlnode *r_rotate(struct avlnode *t){
+	struct avlnode *r=t->r;
+	t->r=r->l;
+	r->l=t;
+	updateh(t);
+	updateh(r);
+	return r;
+}
+struct avlnode *l_rotate(struct avlnode *t){
+	struct avlnode *l=t->l;
+	t->l=l->r;
+	l->r=t;
+	updateh(t);
+	updateh(l);
+	return l;
+}
+struct avlnode *insert(struct avlnode *t,int x){
+	if (t==NULL){
+		struct avlnode *newnode=(struct avlnode*)malloc(sizeof(struct avlnode));
+		newnode->data=x;
+		newnode->height=1;
+		newnode->l=newnode->r=NULL;
+		return newnode;
+	}
+	if (x<t->data){
+		t->l=insert(t->l,x);
+	}else if (x>t->data){
+		t->r=insert(t->r,x);
+	}
+	updateh(t);
+	if (getbf(t)>1&&getbf(t->l)>=0){
+		return l_rotate(t);
+	}else if (getbf(t)<-1&&getbf(t->r)<0){
+		return r_rotate(t);
+	}else if (getbf(t)>1&&getbf(t->l)<0){
+		t->l=r_rotate(t->l);
+		return l_rotate(t);
+	}else if (getbf(t)<-1&&getbf(t->r)>=0){
+		t->r=l_rotate(t->r);
+		return r_rotate(t);
+	}
+	return t;
+}
+void preorder(struct avlnode *t){
+	if (t){
+		printf("%d,",t->data);
+		preorder(t->l);
+		preorder(t->r);
+	}
+}
+int main(){
+	struct avlnode *root=NULL;
+	int x;
+	while ((scanf("%d",&x))!=EOF){
+		getchar();
+		root=insert(root,x);
+	}
+	preorder(root);
+}
+```
+
+---
+
+
 ## 03 · 图 {#graph}
 
 <span class="chapter-pill">GRAPHS</span>
